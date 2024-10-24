@@ -1,0 +1,79 @@
+@import '../../styles/mixins/common';
+@import '../../styles/mixins/typography';
+
+.typeContainer {
+  @include flex(column, center, stretch);
+  @include colGap(24px);
+
+  /* stylelint-disable-next-line no-duplicate-selectors */
+  & {
+    padding: 0 16px 16px;
+  }
+
+  .section {
+    @include flex(column, center, stretch);
+    @include colGap(8px);
+
+    .sectionHeading {
+      @include typography(h1, bold, var(--background-primary-900));
+    }
+
+    &.scaleSection {
+      .scaleTable {
+        border-collapse: collapse;
+        width: 100%;
+
+        th,
+        td {
+          padding: 4px 8px;
+          border: 1px solid var(--background-primary-900);
+        }
+
+        thead {
+          @include typography(h1, bold, var(--background-primary-900));
+
+          /* stylelint-disable-next-line no-duplicate-selectors */
+          & {
+            text-align: left;
+            vertical-align: text-top;
+          }
+        }
+
+        tbody {
+          @include typography(h1, bold, var(--background-primary-900));
+        }
+      }
+    }
+
+    &.weightSection {
+      .sectionBody {
+        display: grid;
+        grid-gap: 16px 8px;
+        grid-template-columns: repeat(auto-fill, minmax(355px, 1fr));
+        justify-content: space-between;
+
+        .weightContainer {
+          @include flex(column, center, center);
+          @include colGap(4px);
+
+          .weightName {
+            @include typography(h1, bold, var(--background-primary-900));
+          }
+
+          .weightDemoContainer {
+            @include flex(column, center, flex-start);
+            @include colGap(4px);
+
+            /* stylelint-disable-next-line no-duplicate-selectors */
+            & {
+              width: 100%;
+              padding: 4px 8px;
+              color: var(--background-primary-900);
+              border: 1px solid var(--background-primary-900);
+            }
+          }
+        }
+      }
+    }
+  }
+}

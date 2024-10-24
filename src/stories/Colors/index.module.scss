@@ -1,0 +1,73 @@
+@import '../../styles/mixins/common';
+@import '../../styles/mixins/typography';
+
+.colorsContainer {
+  section {
+    @include flex(column, center, flex-start);
+    @include colGap(16px);
+
+    /* stylelint-disable-next-line no-duplicate-selectors */
+    & {
+      margin-bottom: 24px;
+      padding: 0 16px;
+    }
+
+    .sectionHeading {
+      @include typography(h1, bold, var(--background-primary-900));
+    }
+
+    .themeHeader {
+      @include flex(row, space-between, center);
+      @include rowGap(16px);
+      @include typography(h1, bold, var(--background-primary-900));
+
+      /* stylelint-disable-next-line no-duplicate-selectors */
+      & {
+        width: 100%;
+      }
+
+      * {
+        width: 50%;
+      }
+    }
+
+    .colorsRow {
+      @include flex(row, space-between, center);
+      @include rowGap(16px);
+
+      /* stylelint-disable-next-line no-duplicate-selectors */
+      & {
+        width: 100%;
+      }
+
+      .colorCard {
+        @include flex(column, flex-start, flex-start);
+        @include colGap(4px);
+
+        /* stylelint-disable-next-line no-duplicate-selectors */
+        & {
+          overflow: hidden;
+
+          width: 50%;
+          height: 200px;
+          padding: 8px;
+
+          border: 1px solid var(--background-primary-900);
+          border-radius: 4px;
+        }
+
+        .colorName {
+          @include typography(h1, bold, var(--background-primary-900));
+        }
+
+        .colorCode {
+          @include typography(h1, bold, var(--background-primary-900));
+        }
+
+        .whiteText {
+          color: var(--background-primary-50) !important;
+        }
+      }
+    }
+  }
+}

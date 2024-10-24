@@ -1,0 +1,161 @@
+@import '../../styles/mixins/common';
+@import '../../styles/mixins/typography';
+
+.iconsListContainer {
+  @include flex(column, flex-start, flex-start);
+  @include colGap(16px);
+
+  /* stylelint-disable-next-line no-duplicate-selectors */
+  & {
+    padding: 0 16px 16px;
+  }
+
+  .iconSection {
+    @include flex(column, flex-start, flex-start);
+    @include colGap(8px);
+
+    /* stylelint-disable-next-line no-duplicate-selectors */
+    & {
+      width: 100%;
+    }
+
+    .sectionName {
+      @include typography(h1, bold, var(--text-dark-high-emphasis));
+    }
+
+    .icons {
+      display: grid;
+      grid-auto-rows: 48px;
+      grid-template-columns: repeat(auto-fill, 48px);
+      gap: 8px;
+      justify-content: space-between;
+
+      width: 100%;
+
+      .iconBox {
+        @include flex(column, center, center);
+        @include colGap(4px);
+
+        /* stylelint-disable-next-line no-duplicate-selectors */
+        & {
+          cursor: pointer;
+
+          background: var(--background-primary-50);
+          border: 1px solid var(--backgrounds-primary-900);
+          border-bottom: none;
+          border-radius: 5px;
+          box-shadow:
+            0 1px 3px 0 var(--background-primary-900),
+            0 1px 2px 0 var(--background-primary-900);
+        }
+      }
+    }
+  }
+
+  .modal {
+    @include position(fixed, 0, 0, 0, 0);
+
+    /* stylelint-disable-next-line no-duplicate-selectors */
+    & {
+      margin: 0;
+    }
+
+    .backdrop {
+      @include position(absolute, 0, 0, 0, 0);
+
+      /* stylelint-disable-next-line no-duplicate-selectors */
+      & {
+        background: var(--background-primary-50);
+      }
+    }
+
+    .content {
+      @include flex(column, flex-start, flex-start);
+      @include colGap(16px);
+      @include position(absolute, 45%, null, null, 50%);
+
+      /* stylelint-disable-next-line no-duplicate-selectors */
+      & {
+        transform: translate(-50%, -50%);
+
+        overflow-y: auto;
+
+        width: 90%;
+        max-height: 90%;
+        padding: 16px;
+
+        background: var(--background-primary-100);
+        border-radius: 8px;
+      }
+
+      .titleSection {
+        @include flex(row, space-between, center);
+        @include rowGap(4px);
+
+        /* stylelint-disable-next-line no-duplicate-selectors */
+        & {
+          width: 100%;
+        }
+
+        .iconName {
+          @include typography(h1, bold, var(--background-primary-900));
+          @include ellipsis;
+        }
+
+        .dismissIcon {
+          cursor: pointer;
+          color: var(--background-primary-900);
+
+          &,
+          & > * {
+            width: 32px;
+            height: 32px;
+          }
+        }
+      }
+
+      .codeSection {
+        @include flex(column, flex-start, flex-start);
+        @include colGap(8px);
+
+        /* stylelint-disable-next-line no-duplicate-selectors */
+        & {
+          position: relative;
+          width: 100%;
+        }
+
+        .code {
+          @include typography(h1, 700, var(--background-primary-900));
+
+          /* stylelint-disable-next-line no-duplicate-selectors */
+          & {
+            overflow: hidden;
+
+            width: 100%;
+            max-width: 100%;
+            padding: 8px;
+
+            word-break: break-word;
+
+            background: var(--background-primary-100);
+            border-radius: 4px;
+          }
+        }
+
+        .copyIcon {
+          @include position(absolute, null, 0, 0, null);
+
+          /* stylelint-disable-next-line no-duplicate-selectors */
+          & {
+            cursor: pointer;
+            color: var(--background-primary-900);
+          }
+
+          &:active {
+            transform: scale(1.2);
+          }
+        }
+      }
+    }
+  }
+}

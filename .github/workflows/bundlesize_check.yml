@@ -1,0 +1,44 @@
+name: Bundle Size Check
+
+on:
+  push:
+    branches:
+      - development
+      - staging
+      - beta
+      - release
+      - master
+      - 'feature-*'
+  pull_request:
+    branches:
+      - development
+      - staging
+      - beta
+      - release
+      - master
+      - 'feature-*'
+
+jobs:
+  bundle-size:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Comment out authToken line in .npmrc
+        run: |
+          sed -i 's|//npm.pkg.github.com/:_authToken=${GH_TOKEN}|#//npm.pkg.github.com/:_authToken=${GH_TOKEN}|' .npmrc
+      - name: Authenticate with GitHub Packages
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_TOKEN }}" >> ~/.npmrc
+      - name: Installing dependencies
+        run: yarn install --frozen-lockfile
+      - name: Building the project
+        run: yarn build
+      - name: Checking bundle size
+        run: npx bundlewatch --config bundlewatch.config.json
+        env:
+          BUNDLEWATCH_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CI_REPO_OWNER: ${{ github.repository_owner }}
+          CI_REPO_NAME: ${{ github.event.repository.name }}
+          CI_COMMIT_SHA: ${{ github.sha }}
