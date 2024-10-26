@@ -18,8 +18,9 @@
     "dist",
     "types"
   ],
-  "module": "dist/index.js",
-  "types": "types/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "types/esm/index.d.ts",
   "exports": {
     "./icons/*": {
       "types": {
