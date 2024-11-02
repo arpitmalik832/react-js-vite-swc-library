@@ -34,6 +34,21 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Running dependency audit
         run: yarn audit
+  outdated:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Authenticating with GitHub Packages
+        run: |
+          sed -i 's|//npm.pkg.github.com/:_authToken=${GH_TOKEN}|#//npm.pkg.github.com/:_authToken=${GH_TOKEN}|' .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_TOKEN }}" >> ~/.npmrc
+      - name: Installing dependencies
+        run: yarn install --frozen-lockfile
+      - name: Running outdated
+        run: yarn outdated
   lint:
     runs-on: ubuntu-latest
     steps:

@@ -4,9 +4,20 @@
  * @file The file is saved as `.eslintrc.cjs`.
  */
 module.exports = {
+  env: { browser: true, es2021: true, jest: true },
   parser: '@babel/eslint-parser',
   parserOptions: {
+    requireConfigFile: false,
     babelOptions: {
+      presets: [
+        [
+          '@babel/preset-react',
+          {
+            runtime: 'automatic',
+          },
+        ],
+        '@babel/preset-env',
+      ],
       plugins: ['@babel/plugin-syntax-import-attributes'],
     },
   },
@@ -15,7 +26,6 @@ module.exports = {
     'plugin:css-modules/recommended',
     'plugin:jsx-a11y/recommended',
     'prettier',
-    'react-app',
     'plugin:storybook/recommended',
     'plugin:jsdoc/recommended',
   ],
@@ -41,6 +51,7 @@ module.exports = {
     'react/react-in-jsx-scope': 0,
     'react/function-component-definition': 0,
     'react/prop-types': 0,
+    'react/require-default-props': 0,
     // rules regarding react-hooks plugin
     'react-hooks/rules-of-hooks': 2,
     'react-hooks/exhaustive-deps': 0,

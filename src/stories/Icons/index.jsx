@@ -36,6 +36,7 @@ function Icon({ name }) {
   }, []);
 
   if (!name || loading || !ImportedIconRef.current) return null;
+  // eslint-disable-next-line react/jsx-pascal-case
   return <ImportedIconRef.current />;
 }
 
