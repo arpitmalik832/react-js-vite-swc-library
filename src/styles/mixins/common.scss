@@ -50,22 +50,22 @@
 // Responsive breakpoints
 @mixin respond($breakpoint) {
   @if $breakpoint == phone {
-    @media (width <= 600px) {
+    @media (width <= 37.5rem) {
       @content;
     }
   }
   @if $breakpoint == tab-land {
-    @media (width <= 750px) {
+    @media (width <= 46.875rem) {
       @content;
     }
   }
   @if $breakpoint == tab {
-    @media (width <= 1070px) {
+    @media (width <= 66.875rem) {
       @content;
     }
   }
   @if $breakpoint == desktop {
-    @media (width <= 961px) {
+    @media (width <= 60.0625rem) {
       @content;
     }
   }
@@ -115,7 +115,7 @@
 }
 
 // Box shadow
-@mixin boxShadow($x: 0, $y: 2px, $blur: 4px, $color: #000) {
+@mixin boxShadow($x: 0, $y: 0.125rem, $blur: 0.25rem, $color: #000) {
   box-shadow: $x $y $blur $color;
 }
 

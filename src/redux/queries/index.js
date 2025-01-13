@@ -2,7 +2,6 @@
  * Exports all the redux queries.
  * @file This file is saved as `index.js`.
  */
-import baseQuery from './baseQuery';
+import baseQueryFn from './baseQueryFn';
 
-export * from './sampleQuery';
-export { baseQuery };
+export { baseQueryFn };

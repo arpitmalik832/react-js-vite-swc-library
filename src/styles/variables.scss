@@ -5,7 +5,7 @@
 :root {
   @each $property, $value in c.$colors {
     @if string.index($property, 'color-semantics-light-') == 1 {
-      --#{str-slice($property, 23)}: #{$value};
+      --#{string.slice($property, 23)}: #{$value};
     }
   }
 
@@ -28,7 +28,7 @@
   @media (prefers-color-scheme: dark) {
     @each $property, $value in c.$colors {
       @if string.index($property, 'color-semantics-dark-') == 1 {
-        --#{str-slice($property, 22)}: #{$value};
+        --#{string.slice($property, 22)}: #{$value};
       }
     }
   }

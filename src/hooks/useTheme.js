@@ -35,7 +35,9 @@ function useTheme() {
   }, []);
 
   useLayoutEffect(() => {
-    preferredColorScheme.subscribe(e => updateStore(e.matches));
+    preferredColorScheme.subscribe(e => {
+      updateStore(e.matches);
+    });
 
     return () => {
       preferredColorScheme.unSubscribe();
