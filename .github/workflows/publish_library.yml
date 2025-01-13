@@ -1,28 +1,74 @@
 name: Publish Package
 
 on:
-  push:
-    branches:
-      - staging
+  workflow_dispatch:
+    inputs:
+      version_bump_type:
+        description: 'Version bump type (patch, minor, major)'
+        required: true
+        default: 'patch'
+        type: 'choice'
+        options:
+          - patch
+          - minor
+          - major
+      release_type:
+        description: 'Release type (release, alpha, beta, rc)'
+        required: true
+        default: 'alpha'
+        type: 'choice'
+        options:
+          - release
+          - alpha
+          - beta
+          - rc
+
+env:
+  PNPM_VERSION: 10.0.0-beta.1
+  NODE_VERSION: 22
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          token: ${{ secrets.GH_TOKEN }}
+      - name: Installing pnpm ${{ env.PNPM_VERSION }}
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - name: Using Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      - name: Configure Git
+        run: |
+          git remote set-url origin https://${{ github.actor }}:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
       - name: Authenticating with GitHub Packages
         run: |
           sed -i 's|//npm.pkg.github.com/:_authToken=${GH_TOKEN}|#//npm.pkg.github.com/:_authToken=${GH_TOKEN}|' .npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_TOKEN }}" >> ~/.npmrc
       - name: Installing dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
+      - name: Bumping the version
+        run: |
+          git status
+          git stash
+          git status
+          pnpm version-bump:${{ github.event.inputs.version_bump_type }}:${{ github.event.inputs.release_type }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       - name: Publishing the library package
         run: |
-          yarn build:prod
-          yarn publish
+          git status
+          git stash pop
+          git status
+          pnpm build:prod
+          pnpm publish:${{ github.event.inputs.release_type }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
       - name: Output package details
