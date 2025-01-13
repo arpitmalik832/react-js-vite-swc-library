@@ -86,7 +86,7 @@ const config = {
     url: 'http://localhost:3000/',
   },
   transform: {
-    '\\.(js|jsx)$': '@swc/jest',
+    '\\.(js|jsx)$': 'babel-jest',
   },
   // unmockedModulePathPatterns: // [array<string>]
   verbose: true, // [boolean],

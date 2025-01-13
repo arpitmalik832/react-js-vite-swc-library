@@ -32,7 +32,8 @@ const colorRegex =
 const colorVariables = [];
 let res = [];
 let match;
-while ((match = colorRegex.exec(cssContent)) !== null) {
+while (colorRegex.exec(cssContent) !== null) {
+  match = colorRegex.exec(cssContent);
   const [fullMatch] = match;
   const variableName = fullMatch.split(':')[0].trim();
   colorVariables.push(variableName);

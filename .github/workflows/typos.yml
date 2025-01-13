@@ -1,14 +1,6 @@
 name: Spellcheck
 
 on:
-  push:
-    branches:
-      - development
-      - staging
-      - beta
-      - release
-      - master
-      - 'feature-*'
   pull_request:
     branches:
       - development
