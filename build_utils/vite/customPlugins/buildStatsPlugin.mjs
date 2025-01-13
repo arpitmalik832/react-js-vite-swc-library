@@ -33,8 +33,12 @@ export default function buildStats(outputPath = 'build-stats.json') {
         largestFile: null,
       };
 
-      for (const [fileName, fileMeta] of Object.entries(bundle)) {
-        if (!fileName.endsWith('.map')) {
+      Object.entries(bundle)
+        .filter(
+          ([fileName]) =>
+            !fileName.endsWith('.map') && !fileName.endsWith('.br'),
+        )
+        .forEach(([fileName, fileMeta]) => {
           let content = '';
 
           if (fileMeta.code) {
@@ -60,8 +64,7 @@ export default function buildStats(outputPath = 'build-stats.json') {
           stats.totalSize += size;
           stats.totalGzippedSize += gzippedSize;
           stats.totalBrotliSize += brotliSize;
-        }
-      }
+        });
 
       stats.noOfFiles = stats.files.length;
 

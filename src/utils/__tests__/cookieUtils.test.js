@@ -17,6 +17,20 @@ describe('classNames unit test', () => {
     getCookie('z');
   });
 
+  it('should return the decoded cookie value', () => {
+    document.cookie = 'abc=%E2%9C%93'; // Encoded value for '✓'
+    expect(getCookie('abc')).toBe('✓');
+  });
+
+  it('should return an empty string if the cookie value is empty', () => {
+    document.cookie = 'empty=';
+    expect(getCookie('empty')).toBe('');
+  });
+
+  it('should return null if the cookie does not exist', () => {
+    expect(getCookie('nonexistent')).toBe('');
+  });
+
   it('testing deleteCookie', () => {
     deleteCookie('abc');
     deleteCookie('z');

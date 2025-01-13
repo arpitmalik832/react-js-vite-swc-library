@@ -17,12 +17,11 @@ function classnames(...args) {
     } else if (Array.isArray(val)) {
       acc.push(...val);
     } else if (typeof val === 'object' && Object.keys(val).length) {
-      for (const key in val) {
-        // eslint-disable-next-line no-prototype-builtins
-        if (val.hasOwnProperty(key) && val[key]) {
+      Object.entries(val).forEach(([key, value]) => {
+        if (typeof key === 'string' && value) {
           acc.push(key);
         }
-      }
+      });
     }
     return acc;
   }, []);
