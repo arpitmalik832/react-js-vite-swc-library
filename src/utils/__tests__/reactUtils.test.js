@@ -27,6 +27,14 @@ describe('reactUtils unit tests', () => {
     expect(mockFunc).toHaveBeenCalledTimes(1);
   });
 
+  it('useDebounce unit test with default timeout', () => {
+    jest.useFakeTimers();
+    useDebounce(mockFunc)({ persist: undefined, nativeEvent: true });
+    expect(mockFunc).not.toHaveBeenCalled();
+    jest.advanceTimersByTime(250);
+    expect(mockFunc).toHaveBeenCalledTimes(1);
+  });
+
   it('useDebounce unit test with custom timeout', () => {
     jest.useFakeTimers();
     useDebounce(mockFunc, 500)();

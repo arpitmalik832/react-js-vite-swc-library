@@ -15,9 +15,9 @@ const config = {
   plugins: ['stylelint-order'],
   rules: {
     'declaration-property-unit-allowed-list': {
-      '/^border|^padding|^gap/': ['px'],
+      '/^border|^padding|^gap/': ['rem'],
     },
-    'unit-allowed-list': ['%', 'px', 'ms', 'deg', 'vw', 'vh', 'fr'],
+    'unit-allowed-list': ['%', 'rem', 'em', 'ms', 'deg', 'vw', 'vh', 'fr'],
     'color-named': 'never',
     'function-disallowed-list': ['rgb', 'hwb', 'lch', 'hsl'],
     'custom-property-pattern': [

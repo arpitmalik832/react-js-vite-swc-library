@@ -4,7 +4,7 @@
  */
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import {
   clearStack,
@@ -12,7 +12,8 @@ import {
   pushStack,
 } from '../redux/slices/navigationSlice';
 import beforeUnload from '../utils/eventListeners/beforeUnload';
-import { log } from '../utils/logsUtils';
+import { errorLog, log } from '../utils/logsUtils';
+import { APP_UNMOUNT, BACK_CLICK } from '../enums/app';
 
 /**
  * Custom hook to handle back press events in the application.
@@ -29,7 +30,16 @@ function useBackPress() {
     if (stack.length) {
       dispatch(popStack());
     } else {
-      navigate(-1);
+      const res = navigate(-1);
+      if (res instanceof Promise) {
+        res
+          .then(() => {
+            log(BACK_CLICK.SUCCESS);
+          })
+          .catch(err => {
+            errorLog(BACK_CLICK.ERROR, err);
+          });
+      }
     }
   }, [stack]);
 
@@ -37,7 +47,7 @@ function useBackPress() {
 
   useEffect(() => {
     beforeUnload.subscribe(() => {
-      log('😬 user back clicked!!');
+      log(APP_UNMOUNT);
     });
 
     return () => {

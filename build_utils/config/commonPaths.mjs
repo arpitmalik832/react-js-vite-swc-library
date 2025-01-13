@@ -17,6 +17,7 @@ const storybookChunkManifestPath = join(
 );
 const iconsPath = join(PROJECT_ROOT, 'src', 'assets', 'icons');
 const iconsListPath = join(PROJECT_ROOT, 'static', 'enums', 'icons_list.mjs');
+const distInfoPath = join(PROJECT_ROOT, 'distInfo');
 
 export {
   projectRootPath,
@@ -26,4 +27,5 @@ export {
   storybookChunkManifestPath,
   iconsPath,
   iconsListPath,
+  distInfoPath,
 };
