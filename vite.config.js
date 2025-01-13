@@ -4,13 +4,14 @@
  */
 import { defineConfig, mergeConfig } from 'vite';
 
-import commonConfig from './build_utils/vite/configs/vite.common.mjs';
+import commonConfig from './build_utils/vite/configs/vite.common.main.mjs';
 import buildStatsConfig from './build_utils/vite/configs/vite.buildStats.mjs';
 import visualizerConfig from './build_utils/vite/configs/vite.visualizer.mjs';
 import {
   ERR_NO_APP_ENV_FLAG,
   ERR_NO_LIB_ENV_FLAG,
 } from './build_utils/config/logs.mjs';
+import { BUILD_TYPE } from './build_utils/config/index.mjs';
 
 /**
  * Get additional Vite configurations based on command line arguments.
@@ -24,8 +25,8 @@ function getAddons() {
   const addBuildStats = process.env.INCLUDE_BUILD_STATS === 'true';
 
   const configs = [];
-  if (addVisualizer) configs.push(visualizerConfig);
-  if (addBuildStats) configs.push(buildStatsConfig);
+  if (addVisualizer) configs.push(visualizerConfig(BUILD_TYPE.MAIN));
+  if (addBuildStats) configs.push(buildStatsConfig(BUILD_TYPE.MAIN));
 
   let result = {};
   if (configs.length > 1) {

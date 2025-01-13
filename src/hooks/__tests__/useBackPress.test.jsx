@@ -5,20 +5,30 @@
 import { useEffect } from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { configureStore, createSlice } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 
 import useBackPress from '../useBackPress';
+import { navigationSlice } from '../../redux/slices';
 
-jest.mock('react-router-dom', () => ({
+jest.mock('react-router', () => ({
   __esModule: true,
-  useNavigate: jest.fn().mockReturnValue(jest.fn()),
+  useNavigate: jest.fn(() => {
+    const rand = Math.random();
+    if (rand < 0.3) {
+      return jest.fn(() => Promise.resolve());
+    }
+    if (rand < 0.6) {
+      return jest.fn(() => Promise.reject(new Error('an error')));
+    }
+    return jest.fn();
+  }),
 }));
 
-jest.mock('../../utils/eventListeners/beforeUnload.js', () => ({
+jest.mock('../../utils/eventListeners/beforeUnload', () => ({
   __esModule: true,
   default: {
-    subscribe: e => e(),
+    subscribe: e => e({}),
     unSubscribe: jest.fn(),
   },
 }));
@@ -30,29 +40,17 @@ jest.mock('../../utils/commonUtils', () => ({
 
 describe('useBackPress unit tests', () => {
   it('snapshot test', () => {
-    const navigationSlice = createSlice({
-      name: 'navigation',
-      initialState: { stack: [] },
-    });
-
     const store = configureStore({
       reducer: {
         navigation: navigationSlice.reducer,
       },
     });
 
-    /**
-     * Temporary component to test the useBackPress hook.
-     * @returns {import('react').JSX.Element} The rendered component.
-     * @example
-     * // Example usage:
-     * <TempComponent />
-     */
-    function TempComponent() {
+    const TempComponent = () => {
       useBackPress();
 
       return <div data-testid="temp-component" />;
-    }
+    };
 
     const component = render(
       <Provider store={store}>
@@ -64,41 +62,13 @@ describe('useBackPress unit tests', () => {
   });
 
   it('testing functions', () => {
-    const navigationSlice = createSlice({
-      name: 'navigation',
-      initialState: {
-        stack: [],
-      },
-      reducers: {
-        pushStack: (state, action) => {
-          state.stack.push(action.payload);
-          return state;
-        },
-        popStack: state => {
-          state.stack.pop()();
-          return state;
-        },
-        clearStack: state => ({
-          ...state,
-          stack: [],
-        }),
-      },
-    });
-
     const store = configureStore({
       reducer: {
         navigation: navigationSlice.reducer,
       },
     });
 
-    /**
-     * Temporary component to test the useBackPress hook.
-     * @returns {import('react').JSX.Element} The rendered component.
-     * @example
-     * // Example usage:
-     * <TempComponent />
-     */
-    function TempComponent() {
+    const TempComponent = () => {
       const { push, pop } = useBackPress();
 
       useEffect(() => {
@@ -112,7 +82,7 @@ describe('useBackPress unit tests', () => {
           </button>
         </div>
       );
-    }
+    };
 
     const { getByTestId } = render(
       <Provider store={store}>
@@ -125,41 +95,112 @@ describe('useBackPress unit tests', () => {
   });
 
   it('testing functions', () => {
-    const navigationSlice = createSlice({
-      name: 'navigation',
-      initialState: {
-        stack: [],
-      },
-      reducers: {
-        pushStack: (state, action) => {
-          state.stack.push(action.payload);
-          return state;
-        },
-        popStack: state => {
-          state.stack.pop()();
-          return state;
-        },
-        clearStack: state => ({
-          ...state,
-          stack: [],
-        }),
-      },
-    });
-
     const store = configureStore({
       reducer: {
         navigation: navigationSlice.reducer,
       },
     });
 
-    /**
-     * Temporary component to test the useBackPress hook.
-     * @returns {import('react').JSX.Element} The rendered component.
-     * @example
-     * // Example usage:
-     * <TempComponent />
-     */
-    function TempComponent() {
+    const TempComponent = () => {
+      const { push, pop } = useBackPress();
+
+      useEffect(() => {
+        push(jest.fn());
+      }, []);
+
+      return (
+        <div data-testid="temp-component">
+          <button type="button" data-testid="temp-btn" onClick={pop}>
+            temp btn
+          </button>
+        </div>
+      );
+    };
+
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <TempComponent />
+      </Provider>,
+    );
+
+    fireEvent.click(getByTestId('temp-btn'));
+    fireEvent.click(getByTestId('temp-btn'));
+  });
+
+  it('testing functions', () => {
+    const store = configureStore({
+      reducer: {
+        navigation: navigationSlice.reducer,
+      },
+    });
+
+    const TempComponent = () => {
+      const { push, pop } = useBackPress();
+
+      useEffect(() => {
+        push(jest.fn());
+      }, []);
+
+      return (
+        <div data-testid="temp-component">
+          <button type="button" data-testid="temp-btn" onClick={pop}>
+            temp btn
+          </button>
+        </div>
+      );
+    };
+
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <TempComponent />
+      </Provider>,
+    );
+
+    fireEvent.click(getByTestId('temp-btn'));
+    fireEvent.click(getByTestId('temp-btn'));
+  });
+
+  it('testing functions', () => {
+    const store = configureStore({
+      reducer: {
+        navigation: navigationSlice.reducer,
+      },
+    });
+
+    const TempComponent = () => {
+      const { push, pop } = useBackPress();
+
+      useEffect(() => {
+        push(jest.fn());
+      }, []);
+
+      return (
+        <div data-testid="temp-component">
+          <button type="button" data-testid="temp-btn" onClick={pop}>
+            temp btn
+          </button>
+        </div>
+      );
+    };
+
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <TempComponent />
+      </Provider>,
+    );
+
+    fireEvent.click(getByTestId('temp-btn'));
+    fireEvent.click(getByTestId('temp-btn'));
+  });
+
+  it('testing functions', () => {
+    const store = configureStore({
+      reducer: {
+        navigation: navigationSlice.reducer,
+      },
+    });
+
+    const TempComponent = () => {
       const { push, clear } = useBackPress();
 
       useEffect(() => {
@@ -173,7 +214,7 @@ describe('useBackPress unit tests', () => {
           </button>
         </div>
       );
-    }
+    };
 
     const { getByTestId } = render(
       <Provider store={store}>

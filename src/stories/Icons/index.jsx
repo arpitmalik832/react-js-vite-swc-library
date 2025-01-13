@@ -25,7 +25,7 @@ function Icon({ name }) {
 
   useEffect(() => {
     setLoading(true);
-    import(/* @vite-ignore */ `../../assets/icons/${name}?import`)
+    import(`../../assets/icons/${name}`)
       .then(comp => {
         ImportedIconRef.current = comp.ReactComponent;
         setLoading(false);
@@ -36,6 +36,7 @@ function Icon({ name }) {
   }, []);
 
   if (!name || loading || !ImportedIconRef.current) return null;
+  // eslint-disable-next-line react/jsx-pascal-case
   return <ImportedIconRef.current />;
 }
 
@@ -116,6 +117,7 @@ function Icons() {
           <div
             role="button"
             tabIndex={0}
+            aria-label="close icon"
             aria-pressed="false"
             className={s.backdrop}
             onClick={() => {

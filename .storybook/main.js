@@ -14,7 +14,7 @@ export default {
     'storybook-addon-render-modes',
   ],
   framework: '@storybook/react-vite',
-  async viteFinal(config, { configType }) {
+  viteFinal: config => {
     if (!process.env.BE_ENV) {
       throw new Error(ERR_NO_BE_ENV_FLAG);
     }

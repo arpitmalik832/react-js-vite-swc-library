@@ -50,9 +50,15 @@ function handleRequest(request) {
 function addRequestInterceptor(axiosInstance) {
   axiosInstance.interceptors.request.use(
     request => {
-      log('Starting request -> ', request);
-      const newRequest = { ...request };
-      newRequest.metadata = { startTime: new Date() };
+      const newRequest = {
+        ...request,
+        data: {
+          startTime: new Date().toISOString(),
+          endTime: new Date().toISOString(),
+          responseTime: 0,
+        },
+      };
+      log('Starting request -> ', newRequest);
       return newRequest;
     },
     error => {
@@ -71,19 +77,50 @@ function addRequestInterceptor(axiosInstance) {
 function addResponseInterceptor(axiosInstance) {
   axiosInstance.interceptors.response.use(
     response => {
-      log('Returning response -> ', response);
-      const newResponse = { ...response };
-      newResponse.config.metadata.endTime = new Date();
-      newResponse.responseTime =
-        newResponse.config.metadata.endTime -
-        newResponse.config.metadata.startTime;
+      const metadata = JSON.parse((response.config.data ?? '{}').toString());
+      let updatedMetadata;
+      if (Object.entries(metadata).length) {
+        const startTime = new Date(metadata.startTime);
+        const endTime = new Date();
+        updatedMetadata = {
+          startTime: startTime.toISOString(),
+          endTime: endTime.toISOString(),
+          responseTime: endTime.getTime() - startTime.getTime(),
+        };
+      } else {
+        updatedMetadata = { startTime: '', endTime: '', responseTime: 0 };
+      }
+      const newResponse = {
+        ...response,
+        config: {
+          ...response.config,
+          data: updatedMetadata,
+        },
+      };
+      log('Returning response -> ', newResponse);
       return newResponse;
     },
     error => {
-      const newError = { ...error };
-      newError.config.metadata.endTime = new Date();
-      newError.responseTime =
-        newError.config.metadata.endTime - newError.config.metadata.startTime;
+      const metadata = JSON.parse((error.config.data ?? '{}').toString());
+      let updatedMetadata;
+      if (Object.entries(metadata).length) {
+        const startTime = new Date(metadata.startTime);
+        const endTime = new Date();
+        updatedMetadata = {
+          startTime: startTime.toISOString(),
+          endTime: endTime.toISOString(),
+          responseTime: endTime.getTime() - startTime.getTime(),
+        };
+      } else {
+        updatedMetadata = { startTime: '', endTime: '', responseTime: 0 };
+      }
+      const newError = {
+        ...error,
+        config: {
+          ...error.config,
+          data: updatedMetadata,
+        },
+      };
       errorLog('Response returned with error -> ', newError);
       throw newError;
     },
