@@ -133,8 +133,13 @@ const apisSlice = createSlice({
 
 export { apisSlice };
 export const {
-  updateApi1Host,
-  updateApi1Headers,
-  addToApi1Headers,
-  updateApi1AxiosInstance,
+  addNewApiData,
+  updateApiHostByValue,
+  updateApiHostByIndex,
+  updateApiHeadersByHost,
+  updateApiHeadersByIndex,
+  addToApiHeadersByHost,
+  addToApiHeadersByIndex,
+  updateApiAxiosInstanceByHost,
+  updateApiAxiosInstanceByIndex,
 } = apisSlice.actions;
