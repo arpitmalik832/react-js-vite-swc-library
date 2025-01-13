@@ -13,7 +13,7 @@
   "hooks": {
     "before:init": [
       "echo 'Starting the release process...'",
-      "yarn lint:fix",
+      "pnpm lint:fix",
       "git add ."
     ],
     "after:bump": ["git add ."],

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * Unit tests for useApiRequest hook.
  * @file The file is saved as `useApiRequest.test.jsx`.
@@ -100,10 +99,7 @@ describe('useApiRequest unit tests', () => {
           data-testid="temp-component"
           type="button"
           onClick={() => {
-            makeGetCall({
-              axiosInstance: apis.api1AxiosInstance,
-              url: 'todos/1',
-            });
+            makeGetCall('todos/1', apis.api1AxiosInstance);
           }}
         >
           Mocked
@@ -152,10 +148,7 @@ describe('useApiRequest unit tests', () => {
           data-testid="temp-component"
           type="button"
           onClick={() => {
-            makeGetCall({
-              axiosInstance: apis.api1AxiosInstance,
-              url: 'todos/1',
-            });
+            makeGetCall('todos/1', apis.api1AxiosInstance);
             cancelRequest('todos/1');
             cancelRequest('xyz');
           }}
@@ -205,10 +198,7 @@ describe('useApiRequest unit tests', () => {
           data-testid="temp-component"
           type="button"
           onClick={() => {
-            makePostCall({
-              axiosInstance: apis.api1AxiosInstance,
-              url: 'todos/1',
-            });
+            makePostCall('todos/1', {}, apis.api1AxiosInstance);
           }}
         >
           Mocked
@@ -256,10 +246,7 @@ describe('useApiRequest unit tests', () => {
           data-testid="temp-component"
           type="button"
           onClick={() => {
-            makePostCall({
-              axiosInstance: apis.api1AxiosInstance,
-              url: 'todos/1',
-            });
+            makePostCall('todos/1', {}, apis.api1AxiosInstance);
             cancelAllRequests();
           }}
         >
@@ -308,10 +295,7 @@ describe('useApiRequest unit tests', () => {
           data-testid="temp-component"
           type="button"
           onClick={() => {
-            makePutCall({
-              axiosInstance: apis.api1AxiosInstance,
-              url: 'todos/1',
-            });
+            makePutCall('todos/1', {}, apis.api1AxiosInstance);
           }}
         >
           Mocked
@@ -359,10 +343,7 @@ describe('useApiRequest unit tests', () => {
           data-testid="temp-component"
           type="button"
           onClick={() => {
-            makeDeleteCall({
-              axiosInstance: apis.api1AxiosInstance,
-              url: 'todos/1',
-            });
+            makeDeleteCall('todos/1', apis.api1AxiosInstance);
           }}
         >
           Mocked

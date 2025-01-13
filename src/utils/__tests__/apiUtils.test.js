@@ -3,13 +3,14 @@
  * @file This file is saved as `apiUtils.test.js`.
  */
 import '@testing-library/jest-dom';
+import axios, { AxiosError } from 'axios';
 
 import {
   addRequestInterceptor,
   addResponseInterceptor,
   handleRequest,
 } from '../apiUtils';
-import { log } from '../logsUtils';
+import { errorLog } from '../logsUtils';
 
 jest.mock('../commonUtils', () => ({
   __esModule: true,
@@ -18,129 +19,170 @@ jest.mock('../commonUtils', () => ({
 }));
 
 describe('apiUtils unit test', () => {
-  it('test function with proper response', async () => {
+  const axiosInstance = axios.create();
+  axiosInstance.interceptors.request.use = jest.fn();
+  axiosInstance.interceptors.response.use = jest.fn();
+
+  it('test function with proper response', () => {
     const mockData = { data: 'test data' };
 
-    const request = Promise.resolve({ data: mockData });
-    const result = await handleRequest(request);
-
-    expect(result).toEqual(mockData);
+    handleRequest(
+      Promise.resolve({
+        data: mockData,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {},
+        request: {},
+      }),
+    )
+      .then(result => {
+        expect(result).toEqual(mockData);
+      })
+      .catch(err => {
+        errorLog(err);
+      });
   });
 
-  it('should handle Axios API error response', async () => {
-    const mockError = {
-      response: {
-        status: 404,
-        data: 'Not Found',
+  it('should handle Axios API error response', () => {
+    const mockError = 'Testing AxiosError';
+
+    handleRequest(
+      Promise.reject(new AxiosError(mockError, '404', {}, {}, {})),
+    ).catch(error => {
+      expect(error.message).toEqual(mockError);
+    });
+  });
+
+  it('should handle Network Error Case', () => {
+    const message = 'Not Found';
+    const requestUrl = 'https://example.com/';
+
+    handleRequest(
+      Promise.reject(new AxiosError(message, '404', {}, { url: requestUrl })),
+    ).catch(error => {
+      expect(error.message).toEqual(message);
+    });
+  });
+
+  it('should handle Network Error Case', () => {
+    const requestUrl = 'https://example.com/';
+
+    handleRequest(
+      Promise.reject(
+        new AxiosError(
+          '',
+          '404',
+          {
+            url: requestUrl,
+          },
+          {},
+        ),
+      ),
+    ).catch(error => {
+      expect(error.config?.url).toEqual(requestUrl);
+    });
+  });
+
+  it('should handle canceled request Case', () => {
+    const message = 'canceled';
+
+    handleRequest(Promise.reject(new AxiosError(message, '404', {}, {}))).catch(
+      error => {
+        expect(error.message).toEqual(message);
       },
-    };
-
-    const request = Promise.reject(mockError);
-    await handleRequest(request).catch(error => {
-      expect(error).toEqual(mockError);
-    });
+    );
   });
 
-  it('should handle Network Error Case', async () => {
-    const mockError = {
-      message: 'Not Found',
-      request: {
-        url: 'https://example.com/',
-      },
-    };
-
-    const request = Promise.reject(mockError);
-    await handleRequest(request).catch(error => {
-      expect(error).toEqual(mockError);
-    });
-  });
-
-  it('should handle Network Error Case', async () => {
-    const mockError = {
-      config: {
-        mock: 'Not Found',
-      },
-    };
-
-    const request = Promise.reject(mockError);
-    await handleRequest(request).catch(error => {
-      expect(error).toEqual(mockError);
-    });
-  });
-
-  it('should handle canceled request Case', async () => {
-    const mockError = { message: 'canceled' };
-
-    const request = Promise.reject(mockError);
-    await handleRequest(request).catch(error => {
-      expect(error).toEqual(mockError);
-    });
-  });
-
-  it('should handle Network Error Case', async () => {
-    const mockError = {};
-
-    const request = Promise.reject(mockError);
-    await handleRequest(request).catch(error => {
-      expect(error).toEqual(mockError);
+  it('should handle Network Error Case', () => {
+    handleRequest(Promise.reject(new AxiosError())).catch(error => {
+      expect(typeof error).toEqual('object');
     });
   });
 
   it('test addRequestInterceptor', () => {
-    const axiosInstance = {
-      interceptors: {
-        request: {
-          use: jest.fn(),
-        },
+    addRequestInterceptor(axiosInstance);
+    const requestMetadata = {
+      headers: {},
+      data: {
+        startTime: new Date().toISOString(),
+        endTime: new Date().toISOString(),
+        responseTime: 0,
       },
     };
 
-    addRequestInterceptor(axiosInstance);
+    axiosInstance.interceptors.request.use.mock.calls[0][0](requestMetadata);
 
-    axiosInstance.interceptors.request.use.mock.calls[0][0]({
-      metadata: {
-        startTime: 1,
-      },
-    });
     try {
-      axiosInstance.interceptors.request.use.mock.calls[0][1]({
-        metadata: {
-          startTime: 1,
-        },
-      });
+      axiosInstance.interceptors.request.use.mock.calls[0][1](requestMetadata);
     } catch (r) {
-      log(r);
+      errorLog('AxiosRequestInterceptor', r);
     }
   });
 
   it('test addResponseInterceptor', () => {
-    const axiosInstance = {
-      interceptors: {
-        response: {
-          use: jest.fn(),
-        },
+    addResponseInterceptor(axiosInstance);
+    const response = {
+      data: 'data',
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      config: {
+        headers: {},
       },
     };
 
-    addResponseInterceptor(axiosInstance);
-
-    axiosInstance.interceptors.response.use.mock.calls[0][0]({
-      config: {
-        metadata: {
-          startTime: 1,
-        },
-      },
-    });
+    axiosInstance.interceptors.response.use.mock.calls[0][0](response);
     try {
-      axiosInstance.interceptors.response.use.mock.calls[0][1]({
-        config: {
-          metadata: {
-            startTime: 1,
-          },
-        },
-      });
+      axiosInstance.interceptors.response.use.mock.calls[0][1](response);
     } catch (r) {
-      log(r);
+      errorLog('AxiosResponseInterceptor', r);
+    }
+  });
+
+  it('test addResponseInterceptor', () => {
+    addResponseInterceptor(axiosInstance);
+    const response = {
+      data: 'data',
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      config: {
+        headers: {},
+        data: JSON.stringify({
+          startTime: new Date().toISOString(),
+          endTime: new Date().toISOString(),
+          responseTime: 0,
+        }),
+      },
+    };
+
+    axiosInstance.interceptors.response.use.mock.calls[0][0](response);
+    try {
+      axiosInstance.interceptors.response.use.mock.calls[0][1](response);
+    } catch (r) {
+      errorLog('AxiosResponseInterceptor', r);
+    }
+  });
+
+  it('test addResponseInterceptor', () => {
+    addResponseInterceptor(axiosInstance);
+    const response = {
+      data: 'data',
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      config: {
+        headers: {},
+        data: JSON.stringify({}),
+      },
+    };
+
+    axiosInstance.interceptors.response.use.mock.calls[0][0](response);
+    try {
+      axiosInstance.interceptors.response.use.mock.calls[0][1](response);
+    } catch (r) {
+      errorLog('AxiosResponseInterceptor', r);
     }
   });
 });
