@@ -71,13 +71,13 @@
     "scale": {
       "h1": {
         "font-size": {
-          "value": "32px"
+          "value": "2rem"
         },
         "line-height": {
-          "value": "32px"
+          "value": "2rem"
         },
         "letter-spacing": {
-          "value": "0px"
+          "value": "0"
         }
       }
     },

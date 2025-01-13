@@ -2,183 +2,42 @@
 Red="\033[0;31m"
 Green="\033[0;32m"
 Blue="\033[0;34m"
+Yellow="\033[1;33m"
 NC="\033[0m" # No Color
 
-# validate file size before commit.
-printf "\n${Blue}=================================${NC}\n"
-
-printf "${Green}Start - Checking the code for file sizes.${NC}"
-
-# This is a pre-commit hook that ensures attempts to commit files that are
-# larger than $limit to your _local_ repo fail, with a helpful error message.
-
-# Maximum file size limit in bytes
-limit=$(( 50 * 2**20 )) # 50MB
-limitInMB=$(( $limit / 2**20 ))
-
-# Move to the repo root so git files paths make sense
-repo_root=$( git rev-parse --show-toplevel )
-cd $repo_root
-
-empty_tree=$( git hash-object -t tree /dev/null )
-
-if git rev-parse --verify HEAD > /dev/null 2>&1
-then
-	against=HEAD
-else
-	against="$empty_tree"
-fi
-
-# Set split so that for loop below can handle spaces in file names by splitting on line breaks
-IFS='
-'
-
-printf "Checking staged file sizes"
-
-shouldFail=false
-# `--diff-filter=d` -> skip deletions
-for file in $( git diff-index --cached --diff-filter=d --name-only "$against" ); do
-	# Skip for directories (git submodules)
-	if [[ -f "$file" ]]; then
-		file_size=$( ls -lan $file | awk '{ print $5 }' )
-		if [ "$file_size" -gt  "$limit" ]; then
-printf "${Red}File $file is $(( $file_size / 2**20 )) MB, which is larger than our configured limit of $limitInMB MB shouldFail=true${NC}"
-		fi
-	fi
-done
-
-if $shouldFail
-then
-    printf "${Green}If you really need to commit this file, you can push with the --no-verify switch, but the file should definitely, definitely be under $limitInMB MB!!!${NC}"
-	  printf "${Red}Commit aborted${NC}"
-    exit 1;
-fi
-
-printf "${Green}End - Checking the code for file sizes.${NC}"
-
-printf "\n${Blue}=================================${NC}\n"
-
-# validate unused code before commit.
-printf "\n${Blue}=================================${NC}\n"
-
-printf "${Green}Start - Knipping of the code.${NC}"
-
-yarn knip:prod:check-files
-
-printf "${Green}End - Knipping of the code.${NC}"
-
-printf "\n${Blue}=================================${NC}\n"
-
-# validate staged code before commit.
-printf "\n${Blue}=================================${NC}\n"
-
-printf "${Green}Start - lint-staged of the code.${NC}"
-
-yarn lint-staged
-# Adding changes made by lint-staged
-git add .
-
-printf "${Green}End - lint-staged of the code.${NC}"
-
-printf "\n${Blue}=================================${NC}\n"
-
-# validate code before commit.
-printf "\n${Blue}=================================${NC}\n"
-
-printf "${Green}Start - Linting of the code.${NC}"
-
-yarn lint:fix
-# Adding changes made by lint-staged
-git add .
-
-printf "${Green}End - Linting of the code.${NC}"
-
-printf "\n${Blue}=================================${NC}\n"
-
-# test code before commit.
-printf "\n${Blue}=================================${NC}\n"
-
-printf "${Green}Start - Unit testing.${NC}"
-
-yarn test:coverage:silent:quick
-
-printf "${Green}End - Unit testing.${NC}"
-
-printf "\n${Blue}=================================${NC}\n"
-
-# # e2e test code before commit.
-# printf "\n${Blue}=================================${NC}\n"
-
-# printf "${Green}Start - E2E testing.${NC}"
-
-# yarn e2e-run:pre-commit
-
-# printf "${Green}End - E2E testing.${NC}"
-
-# printf "\n${Blue}=================================${NC}\n"
-
-# # build code before commit 
-# printf "\n${Blue}=================================${NC}\n"
-
-# printf "${Green}Start - Check build (staging).${NC}"
-
-# yarn build
-
-# printf "${Green}End - Check build (staging).${NC}"
-
-# printf "\n${Blue}=================================${NC}\n"
-
-# # build-beta code before commit 
-# printf "\n${Blue}=================================${NC}\n"
-
-# printf "${Green}Start - Check build (beta).${NC}"
-
-# yarn build:beta
-
-# printf "${Green}End - Check build (beta).${NC}"
-
-# printf "\n${Blue}=================================${NC}\n"
-
-# build-prod code before commit 
-printf "\n${Blue}=================================${NC}\n"
-
-printf "${Green}Start - Check build (production).${NC}"
-
-yarn build:prod
-
-printf "${Green}End - Check build (production).${NC}"
-
-printf "\n${Blue}=================================${NC}\n"
-
-# # build-storybook code before commit 
-# printf "\n${Blue}=================================${NC}\n"
-
-# printf "${Green}Start - Check storybook:build (Staging).${NC}"
-
-# yarn storybook:build
-
-# printf "${Green}End - Check storybook:build (Staging).${NC}"
-
-# printf "\n${Blue}=================================${NC}\n"
-
-# # build-storybook:beta code before commit 
-# printf "\n${Blue}=================================${NC}\n"
-
-# printf "${Green}Start - Check storybook:build (Beta).${NC}"
-
-# yarn storybook:build:beta
-
-# printf "${Green}End - Check storybook:build (Beta).${NC}"
-
-# printf "\n${Blue}=================================${NC}\n"
-
-# build-storybook:prod code before commit 
-printf "\n${Blue}=================================${NC}\n"
-
-printf "${Green}Start - Check storybook:build (Production).${NC}"
-
-yarn storybook:build:prod
-
-printf "${Green}End - Check storybook:build (Production).${NC}"
-
-printf "\n${Blue}=================================${NC}\n"
+# Handle interrupts
+trap cleanup INT TERM
+
+cleanup() {
+    echo "\n${Yellow}Pre-commit hook interrupted by user${NC}"
+    exit 130
+}
+
+HOOKS_DIR="./git-hooks"
+
+# Function to run a hook and check its exit status
+run_hook() {
+    hook_name=$1
+    
+    if [ -f "$HOOKS_DIR/$hook_name.sh" ]; then
+        sh "$HOOKS_DIR/$hook_name.sh"
+        exit_code=$?
+        
+        if [ $exit_code -ne 0 ]; then
+            echo "${Red}$hook_name failed with exit code $exit_code${NC}\n"
+            exit $exit_code
+        fi
+    else
+        echo "${Red}Warning: $hook_name.sh not found in $HOOKS_DIR${NC}\n"
+    fi
+}
+
+# Run all hooks
+run_hook "file-size-check"
+run_hook "knip-check"
+run_hook "lint-staged"
+run_hook "lint"
+run_hook "unit-tests"
+run_hook "e2e-tests"
+run_hook "build"
+run_hook "storybook-build"
