@@ -18,7 +18,17 @@ import {
 } from '../commonUtils';
 import { log } from '../logsUtils';
 
+jest.mock('../logsUtils', () => ({
+  log: jest.fn(),
+  errorLog: jest.fn(),
+}));
+
 describe('commonUtils unit tests', () => {
+  // Setup window.scrollTo mock
+  beforeAll(() => {
+    window.scrollTo = jest.fn();
+  });
+
   afterEach(() => {
     jest.resetModules();
     jest.resetAllMocks();
@@ -29,9 +39,7 @@ describe('commonUtils unit tests', () => {
   });
 
   it('testing triggerCallback', () => {
-    triggerCallback(x => {
-      log(x);
-    }, 'a');
+    triggerCallback(() => {}, 'a');
 
     triggerCallback();
   });
@@ -57,13 +65,17 @@ describe('commonUtils unit tests', () => {
   });
 
   it('testing copyToClipboard', () => {
-    copyToClipboard('test');
+    copyToClipboard('test', () => {
+      log('Copied!');
+    });
   });
 
   it('testing copyToClipboard when it fails', () => {
     delete window.navigator;
 
-    copyToClipboard('test');
+    copyToClipboard('test', () => {
+      log('Copied!');
+    });
   });
 
   it('testing downloadFileFromData', () => {

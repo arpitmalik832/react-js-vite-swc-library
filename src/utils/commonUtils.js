@@ -118,12 +118,14 @@ function scrollToTop() {
 /**
  * Copies the provided text to the clipboard.
  * @param {string} text - The text to copy to the clipboard.
+ * @param {Function} callback - The callback function to be executed after copying.
  * @example
- * copyToClipboard('Hello, World!');
+ * copyToClipboard('Hello, World!', () => console.log('Copied!'));
  */
-async function copyToClipboard(text) {
+async function copyToClipboard(text, callback) {
   try {
     await navigator?.clipboard?.writeText(text);
+    callback();
   } catch (e) {
     errorLog('Failed to copy: ', e);
   }
