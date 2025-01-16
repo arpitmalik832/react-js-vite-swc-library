@@ -1,3 +1,7 @@
+/**
+ * Storybook preview configuration.
+ * @file This file is saved as `.storybook/preview.js`.
+ */
 import '../static/styles/postcss-processed/index.css';
 
 export const parameters = {

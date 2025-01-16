@@ -1,5 +1,9 @@
+/**
+ * Stylelint configuration.
+ * For more info, pls refer to https://stylelint.io/user-guide/configuration/.
+ * @file This file is saved as `.stylelintrc.js`.
+ */
 // stylelint configuration
-// https://stylelint.io/user-guide/configuration/
 const config = {
   // The standard config based on a handful of CSS style guides
   // https://github.com/stylelint/stylelint-config-standard
