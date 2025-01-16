@@ -1,4 +1,8 @@
-// Prettier configuration https://prettier.io/docs/en/options
+/**
+ * Prettier configuration.
+ * For more info, pls refer to https://prettier.io/docs/en/options.
+ * @file This file is saved as `.prettierrc.js`.
+ */
 export default {
   arrowParens: 'avoid',
   bracketSameLine: false,

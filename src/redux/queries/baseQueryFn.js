@@ -8,12 +8,10 @@ const baseQueryFn =
   () =>
   async ({ axiosInstance, url }) => {
     const { makeGetCall } = useApiRequest();
-    try {
-      const response = makeGetCall(url, axiosInstance);
-      return { data: response };
-    } catch (err) {
-      return { error: err };
-    }
+
+    return makeGetCall(url, axiosInstance)
+      .then(response => ({ data: response }))
+      .catch(err => ({ error: err }));
   };
 
 export default baseQueryFn;

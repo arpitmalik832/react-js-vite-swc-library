@@ -7,9 +7,9 @@ import '@testing-library/jest-dom';
 
 import ComponentWithSuspense from '../ComponentWithSuspense';
 
-jest.mock('../../organisms/Loader', () => ({
-  default: jest.fn(() => <div data-testid="mock-loader" />),
-}));
+jest.mock('../../organisms/Loader', () => () => (
+  <div data-testid="mock-loader">Loading...</div>
+));
 
 describe('ComponentWithSuspense unit tests', () => {
   afterEach(() => {
