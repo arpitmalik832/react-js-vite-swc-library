@@ -2,18 +2,20 @@
  * Unit tests for useBackPress hook.
  * @file The file is saved as `useBackPress.test.jsx`.
  */
-import { useEffect } from 'react';
-import { fireEvent, render } from '@testing-library/react';
+import { renderHook, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { configureStore } from '@reduxjs/toolkit';
-import { Provider } from 'react-redux';
+import * as reactRedux from 'react-redux';
 
 import useBackPress from '../useBackPress';
-import { navigationSlice } from '../../redux/slices';
+import {
+  clearStack,
+  popStack,
+  pushStack,
+} from '../../redux/slices/navigationSlice';
 
 jest.mock('react-router', () => ({
   __esModule: true,
-  useNavigate: jest.fn(() => {
+  useNavigate: () => {
     const rand = Math.random();
     if (rand < 0.3) {
       return jest.fn(() => Promise.resolve());
@@ -22,7 +24,20 @@ jest.mock('react-router', () => ({
       return jest.fn(() => Promise.reject(new Error('an error')));
     }
     return jest.fn();
-  }),
+  },
+}));
+
+jest.mock('react-redux', () => ({
+  __esModule: true,
+  useDispatch: jest.fn(),
+  useSelector: jest.fn(),
+}));
+
+jest.mock('../../redux/slices/navigationSlice', () => ({
+  __esModule: true,
+  clearStack: jest.fn(),
+  popStack: jest.fn(),
+  pushStack: jest.fn(),
 }));
 
 jest.mock('../../utils/eventListeners/beforeUnload', () => ({
@@ -33,196 +48,112 @@ jest.mock('../../utils/eventListeners/beforeUnload', () => ({
   },
 }));
 
-jest.mock('../../utils/commonUtils', () => ({
+jest.mock('../../utils/logsUtils', () => ({
   __esModule: true,
   log: jest.fn(),
+  errorLog: jest.fn(),
 }));
 
 describe('useBackPress unit tests', () => {
+  const mockDispatch = jest.fn();
+
+  beforeEach(() => {
+    reactRedux.useDispatch.mockReturnValue(mockDispatch);
+    reactRedux.useSelector.mockImplementation(selector =>
+      selector({
+        navigation: {
+          stack: [],
+        },
+      }),
+    );
+  });
+
+  afterEach(() => {
+    cleanup();
+    jest.resetAllMocks();
+    jest.clearAllMocks();
+  });
+
   it('snapshot test', () => {
-    const store = configureStore({
-      reducer: {
-        navigation: navigationSlice.reducer,
-      },
-    });
+    const { result } = renderHook(() => useBackPress());
 
-    const TempComponent = () => {
-      useBackPress();
-
-      return <div data-testid="temp-component" />;
-    };
-
-    const component = render(
-      <Provider store={store}>
-        <TempComponent />
-      </Provider>,
-    );
-
-    expect(component).toMatchSnapshot();
+    expect(result.current).toMatchSnapshot();
   });
 
-  it('testing functions', () => {
-    const store = configureStore({
-      reducer: {
-        navigation: navigationSlice.reducer,
-      },
-    });
+  it('testing push function', () => {
+    const { result } = renderHook(() => useBackPress());
 
-    const TempComponent = () => {
-      const { push, pop } = useBackPress();
-
-      useEffect(() => {
-        push(jest.fn());
-      }, []);
-
-      return (
-        <div data-testid="temp-component">
-          <button type="button" data-testid="temp-btn" onClick={pop}>
-            temp btn
-          </button>
-        </div>
-      );
-    };
-
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <TempComponent />
-      </Provider>,
-    );
-
-    fireEvent.click(getByTestId('temp-btn'));
-    fireEvent.click(getByTestId('temp-btn'));
+    result.current.push();
+    expect(pushStack).toHaveBeenCalledTimes(1);
   });
 
-  it('testing functions', () => {
-    const store = configureStore({
-      reducer: {
-        navigation: navigationSlice.reducer,
-      },
-    });
-
-    const TempComponent = () => {
-      const { push, pop } = useBackPress();
-
-      useEffect(() => {
-        push(jest.fn());
-      }, []);
-
-      return (
-        <div data-testid="temp-component">
-          <button type="button" data-testid="temp-btn" onClick={pop}>
-            temp btn
-          </button>
-        </div>
-      );
-    };
-
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <TempComponent />
-      </Provider>,
+  it('testing pop function', () => {
+    reactRedux.useSelector.mockImplementation(selector =>
+      selector({
+        navigation: {
+          stack: [() => jest.fn()],
+        },
+      }),
     );
+    const { result } = renderHook(() => useBackPress());
 
-    fireEvent.click(getByTestId('temp-btn'));
-    fireEvent.click(getByTestId('temp-btn'));
+    result.current.pop();
+    expect(popStack).toHaveBeenCalledTimes(1);
   });
 
-  it('testing functions', () => {
-    const store = configureStore({
-      reducer: {
-        navigation: navigationSlice.reducer,
-      },
-    });
+  it('testing pop function', () => {
+    const { result } = renderHook(() => useBackPress());
 
-    const TempComponent = () => {
-      const { push, pop } = useBackPress();
-
-      useEffect(() => {
-        push(jest.fn());
-      }, []);
-
-      return (
-        <div data-testid="temp-component">
-          <button type="button" data-testid="temp-btn" onClick={pop}>
-            temp btn
-          </button>
-        </div>
-      );
-    };
-
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <TempComponent />
-      </Provider>,
-    );
-
-    fireEvent.click(getByTestId('temp-btn'));
-    fireEvent.click(getByTestId('temp-btn'));
+    result.current.pop();
+    expect(popStack).toHaveBeenCalledTimes(0);
   });
 
-  it('testing functions', () => {
-    const store = configureStore({
-      reducer: {
-        navigation: navigationSlice.reducer,
-      },
-    });
+  it('testing pop function', () => {
+    const { result } = renderHook(() => useBackPress());
 
-    const TempComponent = () => {
-      const { push, pop } = useBackPress();
-
-      useEffect(() => {
-        push(jest.fn());
-      }, []);
-
-      return (
-        <div data-testid="temp-component">
-          <button type="button" data-testid="temp-btn" onClick={pop}>
-            temp btn
-          </button>
-        </div>
-      );
-    };
-
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <TempComponent />
-      </Provider>,
-    );
-
-    fireEvent.click(getByTestId('temp-btn'));
-    fireEvent.click(getByTestId('temp-btn'));
+    result.current.pop();
+    expect(popStack).toHaveBeenCalledTimes(0);
   });
 
-  it('testing functions', () => {
-    const store = configureStore({
-      reducer: {
-        navigation: navigationSlice.reducer,
-      },
-    });
+  it('testing pop function', () => {
+    const { result } = renderHook(() => useBackPress());
 
-    const TempComponent = () => {
-      const { push, clear } = useBackPress();
+    result.current.pop();
+    expect(popStack).toHaveBeenCalledTimes(0);
+  });
 
-      useEffect(() => {
-        push(jest.fn());
-      }, []);
+  it('testing pop function', () => {
+    const { result } = renderHook(() => useBackPress());
 
-      return (
-        <div data-testid="temp-component">
-          <button type="button" data-testid="temp-btn" onClick={clear}>
-            temp btn
-          </button>
-        </div>
-      );
-    };
+    result.current.pop();
+    expect(popStack).toHaveBeenCalledTimes(0);
+  });
 
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <TempComponent />
-      </Provider>,
+  it('testing pop function', () => {
+    const { result } = renderHook(() => useBackPress());
+
+    result.current.pop();
+    expect(popStack).toHaveBeenCalledTimes(0);
+  });
+
+  it('testing clear function', () => {
+    const { result } = renderHook(() => useBackPress());
+
+    result.current.clear();
+    expect(clearStack).toHaveBeenCalledTimes(0);
+  });
+
+  it('testing clear function', () => {
+    reactRedux.useSelector.mockImplementation(selector =>
+      selector({
+        navigation: {
+          stack: [() => jest.fn()],
+        },
+      }),
     );
+    const { result } = renderHook(() => useBackPress());
 
-    fireEvent.click(getByTestId('temp-btn'));
-    fireEvent.click(getByTestId('temp-btn'));
+    result.current.clear();
+    expect(clearStack).toHaveBeenCalledTimes(1);
   });
 });

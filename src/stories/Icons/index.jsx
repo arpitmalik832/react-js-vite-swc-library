@@ -7,7 +7,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import iconsList from '../../../static/enums/icons_list.mjs';
 import { capitalizeFirstChar } from '../../utils/stringUtils';
 import { copyToClipboard } from '../../utils/commonUtils';
-import { errorLog } from '../../utils/logsUtils';
+import { errorLog, log } from '../../utils/logsUtils';
 
 import s from './index.module.scss';
 
@@ -77,6 +77,7 @@ function Icons() {
           {icons?.map(icon => (
             <div
               role="button"
+              data-testid="icon-box"
               tabIndex={0}
               aria-pressed="false"
               className={s.iconBox}
@@ -113,11 +114,12 @@ function Icons() {
         iconsList.filter(icon => icon.includes('lg32'))?.sort(),
       )}
       {currentIcon && (
-        <div className={s.modal}>
+        <div className={s.modal} data-testid="icon-modal">
           <div
             role="button"
+            data-testid="backdrop"
             tabIndex={0}
-            aria-label="close icon"
+            aria-label="backdrop"
             aria-pressed="false"
             className={s.backdrop}
             onClick={() => {
@@ -134,6 +136,7 @@ function Icons() {
               <div className={s.iconName}>{currentIcon}</div>
               <span
                 role="button"
+                data-testid="close-icon"
                 tabIndex={0}
                 aria-pressed="false"
                 className={s.dismissIcon}
@@ -150,18 +153,25 @@ function Icons() {
               </span>
             </section>
             <section className={s.codeSection}>
-              <code className={s.code}>{getImportPath()}</code>
+              <code className={s.code} data-testid="code-element">
+                {getImportPath()}
+              </code>
               <span
                 role="button"
+                data-testid="copy-icon"
                 tabIndex={0}
                 aria-pressed="false"
                 className={s.copyIcon}
                 onClick={() => {
-                  copyToClipboard(getImportPath());
+                  copyToClipboard(getImportPath(), () => {
+                    log('Copied!');
+                  });
                 }}
                 onKeyDown={e => {
                   if (e.key === 'Enter' || e.key === ' ') {
-                    copyToClipboard(getImportPath());
+                    copyToClipboard(getImportPath(), () => {
+                      log('Copied!');
+                    });
                   }
                 }}
               >

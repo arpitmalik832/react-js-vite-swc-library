@@ -12,118 +12,106 @@ const apisSlice = createSlice({
     addNewApiData: (state, action) => [...state, action.payload],
     updateApiHostByValue: (state, action) => {
       const newState = state;
-      const oldApi = action.payload.oldValue;
+      const { oldValue, newValue } = action.payload;
 
-      const item = newState.find(i => i.host === oldApi);
-      if (item) {
-        const index = newState.indexOf(item);
-        if (index !== -1) {
-          newState[index] = {
-            ...item,
-            host: action.payload.newValue,
-          };
-        }
+      const index = newState.findIndex(i => i.host === oldValue);
+      if (index !== -1) {
+        newState[index] = {
+          ...newState[index],
+          host: newValue,
+        };
       }
       return newState;
     },
     updateApiHostByIndex: (state, action) => {
       const newState = state;
-      const { index } = action.payload;
+      const { index, newValue } = action.payload;
 
-      if (index <= newState.length) {
+      if (index <= newState.length && index >= 0) {
         newState[index] = {
           ...newState[index],
-          host: action.payload.newValue,
+          host: newValue,
         };
       }
       return newState;
     },
     updateApiHeadersByHost: (state, action) => {
       const newState = state;
-      const { host } = action.payload;
+      const { host, newHeaders } = action.payload;
 
-      const item = newState.find(i => i.host === host);
-      if (item) {
-        const index = newState.indexOf(item);
-        if (index !== -1) {
-          newState[index] = {
-            ...item,
-            headers: action.payload.newHeaders,
-          };
-        }
+      const index = newState.findIndex(i => i.host === host);
+      if (index !== -1) {
+        newState[index] = {
+          ...newState[index],
+          headers: newHeaders,
+        };
       }
       return newState;
     },
     updateApiHeadersByIndex: (state, action) => {
       const newState = state;
-      const { index } = action.payload;
+      const { index, newHeaders } = action.payload;
 
-      if (index <= newState.length) {
+      if (index <= newState.length && index >= 0) {
         newState[index] = {
-          ...state[index],
-          headers: action.payload.newHeaders,
+          ...newState[index],
+          headers: newHeaders,
         };
       }
       return newState;
     },
     addToApiHeadersByHost: (state, action) => {
       const newState = state;
-      const { host } = action.payload;
+      const { host, newHeader } = action.payload;
 
-      const item = newState.find(i => i.host === host);
-      if (item) {
-        const index = newState.indexOf(item);
-        if (index !== -1) {
-          newState[index] = {
-            ...item,
-            headers: {
-              ...item.headers,
-              [action.payload.newHeader.key]: action.payload.newHeader.value,
-            },
-          };
-        }
-      }
-      return state;
-    },
-    addToApiHeadersByIndex: (state, action) => {
-      const newState = state;
-      const { index } = action.payload;
-
-      if (index <= state.length) {
+      const index = newState.findIndex(i => i.host === host);
+      if (index !== -1) {
         newState[index] = {
           ...newState[index],
           headers: {
             ...newState[index].headers,
-            [action.payload.newHeader.key]: action.payload.newHeader.value,
+            [newHeader.key]: newHeader.value,
           },
         };
       }
       return state;
     },
+    addToApiHeadersByIndex: (state, action) => {
+      const newState = state;
+      const { index, newHeader } = action.payload;
+
+      if (index <= newState.length && index >= 0) {
+        newState[index] = {
+          ...newState[index],
+          headers: {
+            ...newState[index].headers,
+            [newHeader.key]: newHeader.value,
+          },
+        };
+      }
+      return newState;
+    },
     updateApiAxiosInstanceByHost: (state, action) => {
       const newState = state;
-      const { host } = action.payload;
+      const { host, axiosInstance } = action.payload;
 
-      const item = newState.find(i => i.host === host);
-      if (item) {
-        const index = newState.indexOf(item);
-        if (index !== -1) {
-          newState[index] = {
-            ...item,
-            axiosInstance: action.payload.axiosInstance,
-          };
-        }
+      const index = newState.findIndex(i => i.host === host);
+      if (index !== -1) {
+        newState[index] = {
+          ...newState[index],
+          axiosInstance,
+        };
       }
       return newState;
     },
     updateApiAxiosInstanceByIndex: (state, action) => {
       const newState = state;
-      const { index } = action.payload;
+      const { index, axiosInstance } = action.payload;
 
-      if (index <= newState.length) {
+      if (index <= newState.length && index >= 0) {
         newState[index] = {
           ...newState[index],
-          axiosInstance: action.payload.axiosInstance,
+          axiosInstance,
         };
       }
       return newState;
@@ -133,8 +121,13 @@ const apisSlice = createSlice({
 
 export { apisSlice };
 export const {
-  updateApi1Host,
-  updateApi1Headers,
-  addToApi1Headers,
-  updateApi1AxiosInstance,
+  addNewApiData,
+  updateApiHostByValue,
+  updateApiHostByIndex,
+  updateApiHeadersByHost,
+  updateApiHeadersByIndex,
+  addToApiHeadersByHost,
+  addToApiHeadersByIndex,
+  updateApiAxiosInstanceByHost,
+  updateApiAxiosInstanceByIndex,
 } = apisSlice.actions;

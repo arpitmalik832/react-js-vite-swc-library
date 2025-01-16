@@ -21,18 +21,7 @@ const config = {
   // https://facebook.github.io/jest/docs/en/configuration.html#collectcoverage-boolean
   // collectCoverage: false, // [boolean]
   // https://facebook.github.io/jest/docs/en/configuration.html#collectcoveragefrom-array
-  collectCoverageFrom: [
-    'src/**/*.{js,jsx}',
-    '!src/**/*.{test,spec}.{js,jsx}',
-    '!src/**/*.stories.{js,jsx}',
-    '!src/index.js',
-    '!src/bootstrap.jsx',
-    '!src/configs/**',
-    '!src/enums/**',
-    '!src/redux/**',
-    '!src/routes/**',
-    '!src/stories/**',
-  ],
+  collectCoverageFrom: ['src/**/*.{js,jsx}', '!src/**/*.stories.{js,jsx}'],
   // https://facebook.github.io/jest/docs/en/configuration.html#coveragedirectory-string
   coverageDirectory: '<rootDir>/coverage', // [string]
   coveragePathIgnorePatterns: ['node_modules'],
