@@ -95,4 +95,28 @@ function infoLog(...args) {
   }
 }
 
-export { log, errorLog, warnLog, debugLog, traceLog, tableLog, infoLog };
+const timeLog = label => {
+  if (process.env.APP_ENV !== ENVS.PROD) {
+    // eslint-disable-next-line no-console
+    console.time(label);
+  }
+};
+
+const timeEndLog = label => {
+  if (process.env.APP_ENV !== ENVS.PROD) {
+    // eslint-disable-next-line no-console
+    console.timeEnd(label);
+  }
+};
+
+export {
+  log,
+  errorLog,
+  warnLog,
+  debugLog,
+  traceLog,
+  tableLog,
+  infoLog,
+  timeLog,
+  timeEndLog,
+};

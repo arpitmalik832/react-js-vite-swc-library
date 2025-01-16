@@ -13,6 +13,11 @@ import {
   getAspectRatio,
 } from '../converters';
 
+jest.mock('../logsUtils', () => ({
+  __esModule: true,
+  log: jest.fn(),
+}));
+
 describe('classNames unit test', () => {
   it('testing rgbToHex', () => {
     rgbToHex('rgb(255, 255, 0)');

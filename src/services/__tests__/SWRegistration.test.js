@@ -9,18 +9,6 @@ import { isLocalhost } from '../../utils/commonUtils';
 import fetchMock from '../../__tests__/__mocks__/fetchMock';
 import { ENVS } from '../../enums/app';
 
-jest.mock('../../enums/sw', () => ({
-  __esModule: true,
-  SW_URL: `/sw.js`,
-  LOGS: {
-    SUCCESS: 'Service Worker registered successfully',
-    SW_READY: 'This web-app is being served cache-first by a service.',
-    REGISTRATION_ERROR: 'Error during service worker registration ->',
-    NO_INTERNET:
-      'No internet connection found. App is running in offline mode.',
-  },
-}));
-
 jest.mock('../../utils/commonUtils', () => ({
   __esModule: true,
   log: jest.fn(),

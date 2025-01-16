@@ -12,7 +12,7 @@ import {
 } from '../apiUtils';
 import { errorLog } from '../logsUtils';
 
-jest.mock('../commonUtils', () => ({
+jest.mock('../logsUtils', () => ({
   __esModule: true,
   log: jest.fn(),
   errorLog: jest.fn(),
@@ -39,9 +39,7 @@ describe('apiUtils unit test', () => {
       .then(result => {
         expect(result).toEqual(mockData);
       })
-      .catch(err => {
-        errorLog(err);
-      });
+      .catch(() => {});
   });
 
   it('should handle Axios API error response', () => {
@@ -116,7 +114,7 @@ describe('apiUtils unit test', () => {
     try {
       axiosInstance.interceptors.request.use.mock.calls[0][1](requestMetadata);
     } catch (r) {
-      errorLog('AxiosRequestInterceptor', r);
+      errorLog(r);
     }
   });
 
@@ -136,7 +134,7 @@ describe('apiUtils unit test', () => {
     try {
       axiosInstance.interceptors.response.use.mock.calls[0][1](response);
     } catch (r) {
-      errorLog('AxiosResponseInterceptor', r);
+      errorLog(r);
     }
   });
 
@@ -161,7 +159,7 @@ describe('apiUtils unit test', () => {
     try {
       axiosInstance.interceptors.response.use.mock.calls[0][1](response);
     } catch (r) {
-      errorLog('AxiosResponseInterceptor', r);
+      errorLog(r);
     }
   });
 
@@ -182,7 +180,7 @@ describe('apiUtils unit test', () => {
     try {
       axiosInstance.interceptors.response.use.mock.calls[0][1](response);
     } catch (r) {
-      errorLog('AxiosResponseInterceptor', r);
+      errorLog(r);
     }
   });
 });

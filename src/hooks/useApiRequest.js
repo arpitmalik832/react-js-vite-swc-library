@@ -39,7 +39,7 @@ function useApiRequest() {
    * const response = await makeGetCall({ axiosInstance, url: '/api/data' });
    */
   function makeGetCall(url, axiosInstance, config) {
-    const abortController = createAbortController(JSON.stringify(url));
+    const abortController = createAbortController(`GET ${url}`);
 
     const { signal } = abortController;
 
@@ -62,7 +62,7 @@ function useApiRequest() {
    * const response = await makePostCall({ axiosInstance, url: '/api/data', body: { key: 'value' } });
    */
   function makePostCall(url, body, axiosInstance, config) {
-    const abortController = createAbortController(JSON.stringify(url));
+    const abortController = createAbortController(`POST ${url}`);
 
     const { signal } = abortController;
 
@@ -85,7 +85,7 @@ function useApiRequest() {
    * const response = await makePutCall({ axiosInstance, url: '/api/data', body: { key: 'value' } });
    */
   function makePutCall(url, body, axiosInstance, config) {
-    const abortController = createAbortController(JSON.stringify(url));
+    const abortController = createAbortController(`PUT ${url}`);
 
     const { signal } = abortController;
 
@@ -107,7 +107,7 @@ function useApiRequest() {
    * const response = await makeDeleteCall({ axiosInstance, url: '/api/data' });
    */
   function makeDeleteCall(url, axiosInstance, config) {
-    const abortController = createAbortController(JSON.stringify(url));
+    const abortController = createAbortController(`DELETE ${url}`);
 
     const { signal } = abortController;
 
