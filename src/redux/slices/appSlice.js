@@ -12,10 +12,15 @@ const appSlice = createSlice({
     theme: THEME.LIGHT,
   },
   reducers: {
-    updateStore: (state, action) => ({
-      ...state,
-      [action.payload.key]: action.payload.value,
-    }),
+    updateStore: (state, action) => {
+      if (action?.payload?.key && action?.payload?.value) {
+        return {
+          ...state,
+          [action.payload.key]: action.payload.value,
+        };
+      }
+      return state;
+    },
     setDarkTheme: state => ({
       ...state,
       theme: THEME.DARK,

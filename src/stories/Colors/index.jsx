@@ -27,12 +27,17 @@ function Colors() {
    */
   function getColorValue(type, innerType, semanticLabel, theme) {
     const colorValue =
-      tokens['color-semantics'][theme][type][innerType][semanticLabel].value;
-    if (colorValue.startsWith('#')) {
+      tokens['color-semantics']?.[theme]?.[type]?.[innerType]?.[semanticLabel]
+        ?.value;
+    if (!colorValue) {
+      return '';
+    }
+    if (colorValue?.startsWith('#')) {
       return colorValue;
     }
     const [, colorName, shade] = colorValue.split('.');
-    return tokens['color-primitives'][colorName][shade.replace('}', '')].value;
+    return tokens['color-primitives']?.[colorName]?.[shade.replace('}', '')]
+      ?.value;
   }
 
   /**
@@ -49,6 +54,7 @@ function Colors() {
     const colorValue = getColorValue(type, innerType, semanticLabel, theme);
     return (
       <div
+        data-testid="colorCard"
         style={{
           background: colorValue,
         }}
@@ -58,11 +64,13 @@ function Colors() {
           className={classnames(s.colorName, {
             [s.whiteText]: theme === 'light',
           })}
+          data-testid="colorName"
         >{`--${type}-${innerType}-${semanticLabel}`}</div>
         <div
           className={classnames(s.colorCode, {
             [s.whiteText]: theme === 'light',
           })}
+          data-testid="colorCode"
         >
           {colorValue}
         </div>
@@ -71,23 +79,24 @@ function Colors() {
   }
 
   return (
-    <div className={s.colorsContainer}>
+    <div data-testid="colorsContainer" className={s.colorsContainer}>
       {Object.entries(tokens['color-semantics'].light).map(
         ([type, properties]) =>
           Object.entries(properties).map(([innerType, innerProperties]) => (
             <section key={type}>
-              <div className={s.sectionHeading}>
+              <div data-testid="type" className={s.sectionHeading}>
                 {capitalizeFirstChar(type)}
               </div>
-              <div className={s.sectionHeading}>
+              <div data-testid="innerType" className={s.sectionHeading}>
                 {capitalizeFirstChar(innerType)}
               </div>
-              <div className={s.themeHeader}>
+              <div data-testid="themeHeader" className={s.themeHeader}>
                 <div>Light</div>
                 <div>Dark</div>
               </div>
               {Object.entries(innerProperties).map(([semanticLabel]) => (
                 <div
+                  data-testid="colorsRow"
                   key={`${type}-${innerType}-${semanticLabel}`}
                   className={s.colorsRow}
                 >
