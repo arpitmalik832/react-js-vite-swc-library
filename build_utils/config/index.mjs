@@ -15,4 +15,10 @@ const BUILD_TYPE = {
   STORYBOOK: 'storybook',
 };
 
-export { ENVS, BUILD_TYPE };
+const SPECIAL_IMPORTS = [
+  'react/jsx-runtime',
+  'react/jsx-dev-runtime',
+  'react-dom/client',
+];
+
+export { ENVS, BUILD_TYPE, SPECIAL_IMPORTS };
