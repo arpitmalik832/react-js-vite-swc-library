@@ -13,6 +13,7 @@ import stripCustomWindowVariablesPlugin from '../customPlugins/stripCustomWindow
 import { ENVS } from '../../config/index.mjs';
 import copyPlugin from '../customPlugins/copyPlugin.mjs';
 import importStylesPlugin from '../customPlugins/importStylesPlugin.mjs';
+import { pathChecks } from '../utils/pathUtils';
 
 const config = {
   plugins: [
@@ -64,6 +65,7 @@ const config = {
             }
             return `esm/assets/[name].[ext]`;
           },
+          paths: id => pathChecks(id),
         },
         {
           format: 'cjs',
@@ -74,6 +76,7 @@ const config = {
             }
             return `cjs/assets/[name].[ext]`;
           },
+          paths: id => pathChecks(id),
         },
       ],
     },
