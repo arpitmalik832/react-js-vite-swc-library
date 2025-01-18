@@ -11,7 +11,7 @@ import autoprefixerPlugin from 'autoprefixer';
 import icons_list from '../../../static/enums/icons_list.mjs';
 import svgrConfig from '../../../svgr.config.mjs';
 import { ENVS } from '../../config/index.mjs';
-import { pathChecks } from '../utils/pathUtils';
+import { pathChecks } from '../utils/pathUtils.mjs';
 
 const config = {
   plugins: [
