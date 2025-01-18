@@ -13,7 +13,7 @@ import stripCustomWindowVariablesPlugin from '../customPlugins/stripCustomWindow
 import { ENVS } from '../../config/index.mjs';
 import copyPlugin from '../customPlugins/copyPlugin.mjs';
 import importStylesPlugin from '../customPlugins/importStylesPlugin.mjs';
-import { pathChecks } from '../utils/pathUtils';
+import { pathChecks } from '../utils/pathUtils.mjs';
 
 const config = {
   plugins: [
