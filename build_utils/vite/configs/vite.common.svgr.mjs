@@ -11,6 +11,7 @@ import autoprefixerPlugin from 'autoprefixer';
 import icons_list from '../../../static/enums/icons_list.mjs';
 import svgrConfig from '../../../svgr.config.mjs';
 import { ENVS } from '../../config/index.mjs';
+import { pathChecks } from '../utils/pathUtils';
 
 const config = {
   plugins: [
@@ -39,6 +40,7 @@ const config = {
   },
   build: {
     outDir: 'dist',
+    emptyOutDir: false,
     minify: [ENVS.PROD, ENVS.BETA].includes(process.env.LIB_ENV),
     sourcemap: ![ENVS.PROD, ENVS.BETA].includes(process.env.LIB_ENV),
     lib: {
@@ -53,12 +55,8 @@ const config = {
           preserveModulesRoot: 'src',
           entryFileNames: `esm/[name].js`,
           chunkFileNames: `esm/[name].js`,
-          assetFileNames: assetInfo => {
-            if (assetInfo.name.endsWith('.css')) {
-              return `index.css`;
-            }
-            return `esm/assets/[name].[ext]`;
-          },
+          assetFileNames: `esm/assets/[name].[ext]`,
+          paths: id => pathChecks(id),
         },
         {
           format: 'cjs',
@@ -66,12 +64,8 @@ const config = {
           preserveModulesRoot: 'src',
           entryFileNames: `cjs/[name].js`,
           chunkFileNames: `cjs/[name].js`,
-          assetFileNames: assetInfo => {
-            if (assetInfo.name.endsWith('.css')) {
-              return `index.css`;
-            }
-            return `cjs/assets/[name].[ext]`;
-          },
+          assetFileNames: `cjs/assets/[name].[ext]`,
+          paths: id => pathChecks(id),
         },
       ],
     },
