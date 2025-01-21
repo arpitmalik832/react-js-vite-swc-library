@@ -12,7 +12,10 @@ import { errorLog } from './logsUtils';
  * isNonInteger('3.14'); // returns true
  */
 function isNonInteger(val) {
-  return val === '.' || !/^[0-9,]*$/.test(val);
+  if (typeof val === 'string') {
+    return !/^[0-9,]*$/.test(val);
+  }
+  return val === '.';
 }
 
 /**
@@ -123,12 +126,14 @@ function scrollToTop() {
  * copyToClipboard('Hello, World!', () => console.log('Copied!'));
  */
 async function copyToClipboard(text, callback) {
-  try {
-    await navigator?.clipboard?.writeText(text);
-    callback();
-  } catch (e) {
-    errorLog('Failed to copy: ', e);
-  }
+  navigator?.clipboard
+    ?.writeText(text)
+    .then(() => {
+      callback();
+    })
+    .catch(e => {
+      errorLog('Failed to copy: ', e);
+    });
 }
 
 /**

@@ -109,7 +109,10 @@ describe('useApiRequest unit tests', () => {
           data-testid="temp-component"
           type="button"
           onClick={() => {
-            makeGetCall('todos/1', apis[0].axiosInstance);
+            makeGetCall({
+              url: 'todos/1',
+              axiosInstance: apis[0].axiosInstance,
+            });
           }}
         >
           Mocked
@@ -139,7 +142,10 @@ describe('useApiRequest unit tests', () => {
           data-testid="temp-component"
           type="button"
           onClick={() => {
-            makeGetCall('todos/1', apis[0].axiosInstance);
+            makeGetCall({
+              url: 'todos/1',
+              axiosInstance: apis[0].axiosInstance,
+            });
             cancelRequest('todos/1');
             cancelRequest('xyz');
           }}
@@ -169,7 +175,10 @@ describe('useApiRequest unit tests', () => {
           data-testid="temp-component"
           type="button"
           onClick={() => {
-            makePostCall('todos/1', {}, apis[0].axiosInstance);
+            makePostCall({
+              url: 'todos',
+              axiosInstance: apis[0].axiosInstance,
+            });
           }}
         >
           Mocked
@@ -197,7 +206,10 @@ describe('useApiRequest unit tests', () => {
           data-testid="temp-component"
           type="button"
           onClick={() => {
-            makePutCall('todos/1', {}, apis[0].axiosInstance);
+            makePutCall({
+              url: 'todos/1',
+              axiosInstance: apis[0].axiosInstance,
+            });
           }}
         >
           Mocked
@@ -225,7 +237,10 @@ describe('useApiRequest unit tests', () => {
           data-testid="temp-component"
           type="button"
           onClick={() => {
-            makeDeleteCall('todos/1', apis[0].axiosInstance);
+            makeDeleteCall({
+              url: 'todos/1',
+              axiosInstance: apis[0].axiosInstance,
+            });
           }}
         >
           Mocked
@@ -254,9 +269,18 @@ describe('useApiRequest unit tests', () => {
           data-testid="temp-component"
           type="button"
           onClick={() => {
-            makePostCall('todos/1', {}, apis[0].axiosInstance);
-            makePutCall('todos/1', {}, apis[0].axiosInstance);
-            makeDeleteCall('todos/1', apis[0].axiosInstance);
+            makePostCall({
+              url: 'todos',
+              axiosInstance: apis[0].axiosInstance,
+            });
+            makePutCall({
+              url: 'todos/1',
+              axiosInstance: apis[0].axiosInstance,
+            });
+            makeDeleteCall({
+              url: 'todos/1',
+              axiosInstance: apis[0].axiosInstance,
+            });
             cancelAllRequests();
           }}
         >

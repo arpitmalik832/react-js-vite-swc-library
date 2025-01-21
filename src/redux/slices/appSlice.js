@@ -13,7 +13,7 @@ const appSlice = createSlice({
   },
   reducers: {
     updateStore: (state, action) => {
-      if (action?.payload?.key && action?.payload?.value) {
+      if (action?.payload?.key && action?.payload?.value != null) {
         return {
           ...state,
           [action.payload.key]: action.payload.value,

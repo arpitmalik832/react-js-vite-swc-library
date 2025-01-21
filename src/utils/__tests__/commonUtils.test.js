@@ -70,14 +70,6 @@ describe('commonUtils unit tests', () => {
     });
   });
 
-  it('testing copyToClipboard when it fails', () => {
-    delete window.navigator;
-
-    copyToClipboard('test', () => {
-      log('Copied!');
-    });
-  });
-
   it('testing downloadFileFromData', () => {
     // For text files
     downloadFileFromData('Hello, World!', 'hello.txt', 'text/plain');

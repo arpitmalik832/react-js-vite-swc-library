@@ -17,7 +17,7 @@ import { ENVS } from '../enums/app';
  */
 function registerValidSW() {
   navigator.serviceWorker
-    .register(SW_URL)
+    ?.register(SW_URL)
     .then(registration => {
       log(LOGS.SUCCESS, registration);
     })
@@ -40,11 +40,11 @@ function checkValidSW() {
   })
     .then(response => {
       // To ensure if service worker exists, and that we really are getting a JS file.
-      const contentType = response.headers?.get('content-type');
-      if (response.status === 404 || !contentType.includes('javascript')) {
+      const contentType = response.headers.get('content-type');
+      if (response.status === 404 || !contentType?.includes('javascript')) {
         log(LOGS.NO_SW);
         // No service worker found. Probably a different app. Reloading the page.
-        navigator.serviceWorker.ready
+        navigator.serviceWorker?.ready
           .then(registration => {
             registration
               .unregister()
@@ -102,7 +102,7 @@ const SWRegistration = {
           // Running on localhost -> Let's check if the service worker still exists or not.
           checkValidSW();
 
-          navigator.serviceWorker.ready
+          navigator.serviceWorker?.ready
             .then(() => {
               log(LOGS.SW_READY);
             })
@@ -118,7 +118,7 @@ const SWRegistration = {
   },
   unregister() {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.ready
+      navigator.serviceWorker?.ready
         .then(registration => {
           registration.unregister().catch(err => {
             errorLog('registration.unregister()', err);

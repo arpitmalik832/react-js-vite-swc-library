@@ -78,7 +78,7 @@ function traceLog(...args) {
 function tableLog(...args) {
   if (process.env.APP_ENV !== ENVS.PROD) {
     // eslint-disable-next-line no-console
-    console.table(...args);
+    console.table(args);
   }
 }
 
