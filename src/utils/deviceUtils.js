@@ -14,17 +14,19 @@ function isBrowser() {
   return typeof window !== 'undefined';
 }
 
-const isMobile = {
-  android() {
-    return navigator.userAgent.match(/Android/i) ? 'android' : false;
-  },
-  iOS() {
-    return navigator.userAgent.match(/iPhone|iPad|iPod/i) ? 'ios' : false;
-  },
-  any() {
+class IsMobile {
+  static android() {
+    return /Android/i.test(navigator.userAgent) ? 'android' : false;
+  }
+
+  static iOS() {
+    return /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'ios' : false;
+  }
+
+  static any() {
     return this.android() || this.iOS();
-  },
-};
+  }
+}
 
 /**
  * Checks if the current browser is a mobile browser.
@@ -34,7 +36,7 @@ const isMobile = {
  * isMobileBrowser();
  */
 function isMobileBrowser() {
-  return isBrowser() ? isMobile.any() : false;
+  return isBrowser() ? IsMobile.any() : false;
 }
 
 /**
@@ -50,4 +52,4 @@ function isDesktop() {
   );
 }
 
-export { isBrowser, isDesktop, isMobile, isMobileBrowser };
+export { isBrowser, isDesktop, IsMobile, isMobileBrowser };

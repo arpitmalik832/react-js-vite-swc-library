@@ -31,14 +31,15 @@ function useApiRequest() {
 
   /**
    * Makes a GET request using the provided axios instance.
-   * @param {string} url - The URL for the GET request.
-   * @param {import('axios').AxiosInstance} axiosInstance - The axios instance to use for the request.
-   * @param {import('axios').AxiosRequestConfig} [config] - Optional configuration for the request.
+   * @param {{url: string, axiosInstance: AxiosInstance, config?: AxiosRequestConfig }} params0 - Request Config for the API Request.
+   * @param {string} params0.url - The URL for the GET request.
+   * @param {import('axios').AxiosInstance} params0.axiosInstance - The axios instance to use for the request.
+   * @param {import('axios').AxiosRequestConfig} [params0.config] - Optional configuration for the request.
    * @returns {Promise} A promise that resolves to the response of the GET request.
    * @example
    * const response = await makeGetCall({ axiosInstance, url: '/api/data' });
    */
-  function makeGetCall(url, axiosInstance, config) {
+  function makeGetCall({ url, axiosInstance, config = {} }) {
     const abortController = createAbortController(`GET ${url}`);
 
     const { signal } = abortController;
@@ -53,15 +54,16 @@ function useApiRequest() {
 
   /**
    * Makes a POST request using the provided axios instance.
-   * @param {string} url - The URL for the POST request.
-   * @param {object} body - The body of the POST request.
-   * @param {import('axios').AxiosInstance} axiosInstance - The axios instance to use for the request.
-   * @param {import('axios').AxiosRequestConfig} [config] - Optional configuration for the request.
+   * @param {{url: string, axiosInstance: AxiosInstance, body?: T, config?: AxiosRequestConfig }} params0 - Request Config for the API Request.
+   * @param {string} params0.url - The URL for the POST request.
+   * @param {import('axios').AxiosInstance} params0.axiosInstance - The axios instance to use for the request.
+   * @param {object} [params0.body] - The body of the POST request.
+   * @param {import('axios').AxiosRequestConfig} [params0.config] - Optional configuration for the request.
    * @returns {Promise} A promise that resolves to the response of the POST request.
    * @example
    * const response = await makePostCall({ axiosInstance, url: '/api/data', body: { key: 'value' } });
    */
-  function makePostCall(url, body, axiosInstance, config) {
+  function makePostCall({ url, axiosInstance, body, config }) {
     const abortController = createAbortController(`POST ${url}`);
 
     const { signal } = abortController;
@@ -76,15 +78,16 @@ function useApiRequest() {
 
   /**
    * Makes a PUT request using the provided axios instance.
-   * @param {string} url - The URL for the PUT request.
-   * @param {object} body - The body of the PUT request.
-   * @param {import('axios').AxiosInstance} axiosInstance - The axios instance to use for the request.
-   * @param {import('axios').AxiosRequestConfig} [config] - Optional configuration for the request.
+   * @param {{url: string, axiosInstance: AxiosInstance, body?: T, config?: AxiosRequestConfig }} params0 - Request Config for the API Request.
+   * @param {string} params0.url - The URL for the PUT request.
+   * @param {import('axios').AxiosInstance} params0.axiosInstance - The axios instance to use for the request.
+   * @param {object} [params0.body] - The body of the PUT request.
+   * @param {import('axios').AxiosRequestConfig} [params0.config] - Optional configuration for the request.
    * @returns {Promise} A promise that resolves to the response of the PUT request.
    * @example
    * const response = await makePutCall({ axiosInstance, url: '/api/data', body: { key: 'value' } });
    */
-  function makePutCall(url, body, axiosInstance, config) {
+  function makePutCall({ url, axiosInstance, body, config }) {
     const abortController = createAbortController(`PUT ${url}`);
 
     const { signal } = abortController;
@@ -99,14 +102,15 @@ function useApiRequest() {
 
   /**
    * Makes a DELETE request using the provided axios instance.
-   * @param {string} url - The URL for the DELETE request.
-   * @param {object} axiosInstance - The axios instance to use for the request.
-   * @param {object} [config] - Optional configuration for the request.
+   * @param {{url: string, axiosInstance: AxiosInstance, config?: AxiosRequestConfig }} params0 - Request Config for the API Request.
+   * @param {string} params0.url - The URL for the DELETE request.
+   * @param {object} params0.axiosInstance - The axios instance to use for the request.
+   * @param {object} [params0.config] - Optional configuration for the request.
    * @returns {Promise} A promise that resolves to the response of the DELETE request.
    * @example
    * const response = await makeDeleteCall({ axiosInstance, url: '/api/data' });
    */
-  function makeDeleteCall(url, axiosInstance, config) {
+  function makeDeleteCall({ url, axiosInstance, config }) {
     const abortController = createAbortController(`DELETE ${url}`);
 
     const { signal } = abortController;
@@ -126,9 +130,9 @@ function useApiRequest() {
    * cancelRequest('requestKey');
    */
   function cancelRequest(key) {
-    if (abortControllers[JSON.stringify(key)]) {
-      abortControllers[JSON.stringify(key)].abort();
-      delete abortControllers[JSON.stringify(key)];
+    if (abortControllers[key]) {
+      abortControllers[key].abort();
+      delete abortControllers[key];
     }
   }
 
