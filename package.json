@@ -212,7 +212,7 @@
     "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-visualizer": "^5.12.0",
     "sass": "^1.83.4",
-    "storybook": "^8.3.6",
+    "storybook": "^8.5.1",
     "storybook-addon-render-modes": "^0.0.11",
     "style-dictionary": "^4.1.4",
     "stylelint": "^16.13.2",
